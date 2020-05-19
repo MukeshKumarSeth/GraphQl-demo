@@ -3,7 +3,7 @@ const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const {GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLInt, GraphQLString, graphql,} = require('graphql');
 const app = express();
-
+const bodyParser = require('body-parser');
 const users=[
 	{id:1,name:"master",age:27},
 	{id:2,name:"rahul",age:24},
@@ -71,5 +71,5 @@ app.get('/:id',(req,res)=>{
 });
 
 app.listen('4000',()=>{ 
-	console.log('this server is listening port 4000	');
+	console.log('this server is listening port 4000');
 });
