@@ -42,8 +42,8 @@ const RootQuery = new GraphQLObjectType({//to execute
 			}
 		},
 		author:{//end point to feth from forntent
-			type:new GraphQLList(AuthorType),
-			//arg : {id:{type : GraphQLID}},//it needed when we pass orgument from forntent
+			type:AuthorType,
+			args : {id:{type : GraphQLID}},//it needed when we pass orgument from forntent
 			// resolve(){//this is a function which execute code to get data from db or other sources
 			// 	return find(authers,{id:arg.id}); 
 			// }
