@@ -44,7 +44,7 @@ Mongoose.connect("mongodb://localhost:27017/user",{useNewUrlParser:true});
 // });
 
 
-const Schema = Mongoose.Schema;
+const Schema = Mongoose.Schema;  
 const itemShema = new Schema({
 	item : String,
 	qty : Number
