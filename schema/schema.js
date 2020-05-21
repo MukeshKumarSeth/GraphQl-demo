@@ -5,7 +5,9 @@ const {GraphQLObjectType,
     GraphQLInt,
     GraphQLList ,
     GraphQLID} = require('graphql'); 
-const ItemModel = require('../model/books.js');
+// const ItemModel = require('../model/books.js');
+const Book = require('../model/books.js');
+const Author = require('../model/author.js');
 
 var author = [
 	{name:'Mukesh Kumar Soni',age:26,id:'1'},
@@ -36,10 +38,16 @@ const RootQuery = new GraphQLObjectType({//to execute
 	fields :{
 		book:{//end point to feth from forntent
 			type:BookType,
-			arg : {id:{type : GraphQLString}},//it needed when we pass orgument from forntent
+			args : {id:{type : GraphQLString}},//it needed when we pass orgument from forntent
 			resolve(){//this is a function which execute code to get data from db or other sources
 
 			}
+		},
+		authors:{
+			type:new GraphQLList(AuthorType),
+			resolve(parent,args){
+				return author;
+			}	
 		},
 		author:{//end point to feth from forntent
 			type:AuthorType,
@@ -48,19 +56,47 @@ const RootQuery = new GraphQLObjectType({//to execute
 			// 	return find(authers,{id:arg.id}); 
 			// }
 			resolve: (parent,{ id })=>{
-				console.log('this is id',id);
 				const user = author.filter(author=>author.id == id);
 				return user[0];
+			},
+		books:{
+			type:new GraphQLList(BookType),
+			resolve(parent,args){
+				return books;
+			}	
+		},
+		
+	 }
+	}
+});
+
+const Mutation = new GraphQLObjectType({
+	name : "Mutation",
+	fields : {
+		addAuthor : {
+			type : AuthorType,
+			args : {
+				name: {type : GraphQLString },
+				age : {type : GraphQLInt}
+			},
+			resolve(parent,args){
+				let author = new Author({
+					name : args.name,
+					age : args.age
+				});
+				author.save();
+				return author;
 			}
 		}
 	}
-})
-
-module.exports = new GraphQLSchema({
-	query: RootQuery
 });
 
-// const ItemType= new GraphQLObjectType({
+module.exports = new GraphQLSchema({
+	query: RootQuery,
+	mutation: Mutation
+});
+
+// const ItemType= new GraphQLObjectType({18
 //  	name:"User_record",
 //  	fields : {
 //  		item:{
