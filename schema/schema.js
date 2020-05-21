@@ -4,7 +4,9 @@ const {GraphQLObjectType,
 	GraphQLSchema,
     GraphQLInt,
     GraphQLList ,
-    GraphQLID} = require('graphql'); 
+    GraphQLID,
+    GraphQLNonNull//it used to check data shuld not b null 
+    } = require('graphql'); 
 // const ItemModel = require('../model/books.js');
 const Book = require('../model/books.js');
 const Author = require('../model/author.js');
@@ -81,8 +83,8 @@ const Mutation = new GraphQLObjectType({//to update,delete and insert we use mut
 		addAuthor : {
 			type : AuthorType,
 			args : {
-				name: {type : GraphQLString },
-				age : {type : GraphQLInt}
+				name: {type : new GraphQLNonNull(GraphQLString) },
+				age : {type : new GraphQLNonNull(GraphQLInt)}
 			},
 			resolve(parent,args){
 				let author = new Author({
@@ -96,9 +98,9 @@ const Mutation = new GraphQLObjectType({//to update,delete and insert we use mut
 		addBook:{
 			type : BookType,
 			args : {
-				name : {type : GraphQLString},
-				genre : {type : GraphQLString},
-				authorId : {type : GraphQLID}
+				name : {type : new GraphQLNonNull(GraphQLString)},
+				genre : {type : new GraphQLNonNull(GraphQLString)},
+				authorId : {type : new GraphQLNonNull(GraphQLID)}
 			},
 			resolve(parent,args){
 				console.log('this is for check',parent);
@@ -119,7 +121,7 @@ module.exports = new GraphQLSchema({
 	mutation: Mutation
 });
 
-// const ItemType= new GraphQLObjectType({18
+// const ItemType= new GraphQLObjectType({21
 //  	name:"User_record",
 //  	fields : {
 //  		item:{
