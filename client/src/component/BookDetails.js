@@ -7,7 +7,7 @@ import {getBookQuery} from '../queries/queries';
 class BookDetails extends React.Component{
 			displayBookDetails(){
 			const {book} = this.props.data;
-			console.log(book);
+
 			if(book){
 				return(
 					<div>
@@ -16,7 +16,7 @@ class BookDetails extends React.Component{
 						<p>book.author.name</p>
 						<p>All Books by this Author:</p>
 						<ul className="other-books">
-							{book.author.book.map(item=>{
+							{book.author.books.map(item=>{
 								return <li key ={item.id}>{item.name}</li>
 							})}
 						</ul>
