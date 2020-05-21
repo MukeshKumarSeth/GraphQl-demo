@@ -9,18 +9,18 @@ const {GraphQLObjectType,
 const Book = require('../model/books.js');
 const Author = require('../model/author.js');
 
-var author = [
-	{name:'Mukesh Kumar Soni',age:26,id:'1'},
-	{name:'Rahul Raj',age:24,id:'2'},
-	{name:'Bhawana Bist',age:28,id:'3'}
-]
-
 const BookType = new GraphQLObjectType({//to create book type object
 	name: "Book",
 	fields : ()=>({
-		id : {type:GraphQLString},
+		id : {type:GraphQLID},
 	    name : {type:GraphQLString},
-		genre : {type:GraphQLString}
+		genre : {type:GraphQLString},
+		author : {
+			type : AuthorType,
+			resolve(parent,args){
+				return Author.findById(parent.authorId);
+			}
+		}
 	})
 });
 
@@ -29,7 +29,13 @@ const AuthorType = new GraphQLObjectType({
 	fields : ()=>({
 		id : {type:GraphQLID},
 	    name : {type:GraphQLString},
-		age : {type:GraphQLInt}
+		age : {type:GraphQLInt},
+		books : {
+			type : new GraphQLList(BookType),
+			resolve(parent,args){
+				return Book.find({authorId:parent.id});
+			}
+		}
 	})
 });
 
@@ -38,39 +44,38 @@ const RootQuery = new GraphQLObjectType({//to execute
 	fields :{
 		book:{//end point to feth from forntent
 			type:BookType,
-			args : {id:{type : GraphQLString}},//it needed when we pass orgument from forntent
-			resolve(){//this is a function which execute code to get data from db or other sources
-
+			args : {id:{type : GraphQLID}},//it needed when we pass orgument from forntent
+			resolve(parent,args){//this is a function which execute code to get data from db or other sources
+				console.log('this is for check',args.id);
+				return Book.findById(args.id);
 			}
+		},
+		books:{
+			type:new GraphQLList(BookType),
+			resolve(parent,args){
+				return Book.find({});
+
+			}	
 		},
 		authors:{
 			type:new GraphQLList(AuthorType),
 			resolve(parent,args){
-				return author;
+				return Author.find({});
+
 			}	
 		},
 		author:{//end point to feth from forntent
 			type:AuthorType,
 			args : {id:{type : GraphQLID}},//it needed when we pass orgument from forntent
-			// resolve(){//this is a function which execute code to get data from db or other sources
-			// 	return find(authers,{id:arg.id}); 
-			// }
-			resolve: (parent,{ id })=>{
-				const user = author.filter(author=>author.id == id);
-				return user[0];
+			resolve(parent,args){//this is a function which execute code to get data from db or other sources
+				return Author.findById(args.id); 
 			},
-		books:{
-			type:new GraphQLList(BookType),
-			resolve(parent,args){
-				return books;
-			}	
-		},
 		
 	 }
 	}
 });
 
-const Mutation = new GraphQLObjectType({
+const Mutation = new GraphQLObjectType({//to update,delete and insert we use mutation
 	name : "Mutation",
 	fields : {
 		addAuthor : {
@@ -86,6 +91,24 @@ const Mutation = new GraphQLObjectType({
 				});
 				author.save();
 				return author;
+			}
+		},
+		addBook:{
+			type : BookType,
+			args : {
+				name : {type : GraphQLString},
+				genre : {type : GraphQLString},
+				authorId : {type : GraphQLID}
+			},
+			resolve(parent,args){
+				console.log('this is for check',parent);
+				let book = new Book({
+					name : args.name,
+					genre : args.genre,
+					authorId : args.authorId
+				});
+			    book.save();
+			    return book;
 			}
 		}
 	}
