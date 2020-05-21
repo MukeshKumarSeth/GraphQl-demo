@@ -48,7 +48,6 @@ const RootQuery = new GraphQLObjectType({//to execute
 			type:BookType,
 			args : {id:{type : GraphQLID}},//it needed when we pass orgument from forntent
 			resolve(parent,args){//this is a function which execute code to get data from db or other sources
-				console.log('this is for check',args.id);
 				return Book.findById(args.id);
 			}
 		},
