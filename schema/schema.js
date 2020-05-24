@@ -1,7 +1,7 @@
 
 const {GraphQLObjectType, 
 	GraphQLString ,
-	GraphQLSchema,
+	GraphQLSchema,//to creates schema
     GraphQLInt,
     GraphQLList ,
     GraphQLID,
@@ -44,13 +44,14 @@ const AuthorType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({//to execute
 	name: "RootQueryType",
 	fields :{
-		book:{//end point to feth from forntent
+		book:{//end point to feth from forntent or resolver of query type
 			type:BookType,
 			args : {id:{type : GraphQLID}},//it needed when we pass orgument from forntent
 			resolve(parent,args){//this is a function which execute code to get data from db or other sources
 				return Book.findById(args.id);
 			}
 		},
+
 		books:{
 			type:new GraphQLList(BookType),
 			resolve(parent,args){
@@ -58,6 +59,7 @@ const RootQuery = new GraphQLObjectType({//to execute
 
 			}	
 		},
+
 		authors:{
 			type:new GraphQLList(AuthorType),
 			resolve(parent,args){
@@ -79,7 +81,7 @@ const RootQuery = new GraphQLObjectType({//to execute
 const Mutation = new GraphQLObjectType({//to update,delete and insert we use mutation
 	name : "Mutation",
 	fields : {
-		addAuthor : {
+		addAuthor : { //resolver of mutation type
 			type : AuthorType,
 			args : {
 				name: {type : new GraphQLNonNull(GraphQLString) },
@@ -102,7 +104,6 @@ const Mutation = new GraphQLObjectType({//to update,delete and insert we use mut
 				authorId : {type : new GraphQLNonNull(GraphQLID)}
 			},
 			resolve(parent,args){
-				console.log('this is for check',parent);
 				let book = new Book({
 					name : args.name,
 					genre : args.genre,
@@ -111,7 +112,24 @@ const Mutation = new GraphQLObjectType({//to update,delete and insert we use mut
 			    book.save();
 			    return book;
 			}
+		},
+		delBook:{//end point to feth from forntent or resolver of query type
+			type:BookType,
+			args : {id:{type : GraphQLID}},//it needed when we pass orgument from forntent
+			resolve(parent,args){//this is a function which execute code to get data from db or other sources
+				console.log('check for hit');
+				return Book.findById(args.id).deleteOne();
+			}
 		}
+		// delBook:{//end point to delete from forntent or resolver of query type
+		// 	type:BookType,
+		// 	args : {id:{type : GraphQLID}},//it needed when we pass orgument from forntent
+		// 	resolve(parent,args){//this is a function which execute code to get data from db or other sources
+		// 		const book =  Book.findById(args.id);
+  //    				 // book.deleteOne();s
+  //    				 return book;	
+		// 	}
+		// },
 	}
 });
 

@@ -40,6 +40,9 @@ code {
   color:#880E4F;
 
 }
+#delBook{
+  cursor: pointer;
+}
 
 form {
   background: #fff;
@@ -55,11 +58,11 @@ form.field{
  grid-gap: 10px; 
 }
 
-form-label{
+form label{
   text-align: right;
   padding: 6px;
 }
-form-select,form-input{
+form select,form input{
   margin: 4px;
   padding: 6px;
   box-sizing: border-box;
